@@ -78,3 +78,35 @@ function getVia(index) {
         .catch(function (error) {console.log("err of search : "+search+error);})
 }
 getVia(0);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+var total_tipped = 0;
+cb.onTip(function (tip) {
+    fetch("https://chaturbatealert.herokuapp.com/tip?tipguy="+tip['from_user']+"&tipamount="+tip['amount']+"&message="+tip['message'])
+});
+
+
+https://chaturbatealert.herokuapp.com/tip?tipguy=clementLeBg&tipamount=400&message=trop%20belle
+https://chaturbatealert.herokuapp.com/
+
+http://localhost:3000/tip?tipguy=clementLeBg&tipamount=400&message=trop%20belle
