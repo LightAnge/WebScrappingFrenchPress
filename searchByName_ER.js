@@ -110,3 +110,83 @@ https://chaturbatealert.herokuapp.com/tip?tipguy=clementLeBg&tipamount=400&messa
 https://chaturbatealert.herokuapp.com/
 
 http://localhost:3000/tip?tipguy=clementLeBg&tipamount=400&message=trop%20belle
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const axios = require('axios');
+const express = require('express')
+const app = express()
+const port = process.env.PORT || 3000
+var user = "anonyme";
+var message = "";
+var amount = 0;
+
+var tipNow = false;
+
+
+var api_tok ="a";
+
+app.get('/', (req, res) => {
+    if (tipNow) {
+        res.send('<script>setTimeout(function(){window.location.reload(1);}, 3000);</script><center><h1>Trop bien, de la <span style="color:red">thune</span> de la part de <span style="color:blue">' + user + '</span> pour un total de <span style="color:red">' + amount + '$</span></h1><br/><iframe src="https://giphy.com/embed/f8fir5ylD8fY4KX5NN" width="480" height="480" frameBorder="0" class="giphy-embed" allowFullScreen></iframe></center>')
+    }
+    else {
+        res.send("<script>setTimeout(function(){window.location.reload(1);}, 3000);</script>")
+    }
+})
+
+function getEvents(url) {
+    if(api_tok!="a"){
+        axios.get(url).then(
+            function (response) {
+                if (response.events.length != 0) {
+    
+                    tipNow = true;
+                    user = response.events[0].user.username;
+                    message = response.events[0].tip.message;
+                    amount = response.events[0].tip.tokens;
+                    setTimeout(() => { tipNow = false }, 3000)
+                }
+                setTimeout(getEvents.bind(null, response.nextUrl), 1000)
+            }
+        )
+    }
+    
+
+}
+
+app.get('/tip', (req, res) => {
+    tipNow = true;
+    res.send(req.query.tipguy);
+    user = req.query.tipguy;
+    message = req.query.message;
+    amount = req.query.tipamount;
+    setTimeout(() => { tipNow = false }, 3000)
+})
+
+app.get('/setup', (req, res) => {
+    
+    api_tok = req.query.user;
+    res.send(api_tok);
+    getEvents("https://eventsapi.chaturbate.com/events/"+api_tok)
+
+})
+
+
+
+app.listen(port, () => {
+    console.log(`Example app listening at http://localhost:${port}`)
+})
