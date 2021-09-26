@@ -125,10 +125,11 @@ http://localhost:3000/tip?tipguy=clementLeBg&tipamount=400&message=trop%20belle
 
 
 
-
 const axios = require('axios');
 const express = require('express')
 const app = express()
+app.use(express.static('public'));
+
 const port = process.env.PORT || 3000
 var user = "anonyme";
 var message = "";
@@ -140,11 +141,22 @@ var tipNow = false;
 var api_tok ="a";
 
 app.get('/', (req, res) => {
+
+
     if (tipNow) {
-        res.send('<script>setTimeout(function(){window.location.reload(1);}, 3000);</script><center><h1>Trop bien, de la <span style="color:red">thune</span> de la part de <span style="color:blue">' + user + '</span> pour un total de <span style="color:red">' + amount + '$</span></h1><br/><iframe src="https://giphy.com/embed/f8fir5ylD8fY4KX5NN" width="480" height="480" frameBorder="0" class="giphy-embed" allowFullScreen></iframe></center>')
+        res.send('<head>'+
+        '<style src="style.css" type="text/css"></style>'+
+      '</head><body><audio autoplay><source src="alert.mp3" '+
+    //   '</head><body><audio autoplay><source src="https://soundbible.com/mp3/dun_dun_dun-Delsym-719755295.mp3" '+
+        'type="audio/mpeg"></audio><script>setTimeout(function(){window.location.reload(1);}, 3000);'+
+        '</script><center><h1 class="test">Trop bien, de la <span style="color:red">thune</span>'+
+        ' de la part de <span style="color:blue"><div>' + user + '</div></span> pour un total de <span style="color:red">'
+         + amount + '$</span></h1><br/><iframe src="https://giphy.com/embed/XtydbjSSwkC7K2zBTH" width="480" height="480" frameBorder="0" class="giphy-embed" allowFullScreen></iframe>'+
+         '</iframe><h2>'+message+'</h2></center></body>')
     }
     else {
-        res.send("<script>setTimeout(function(){window.location.reload(1);}, 3000);</script>")
+        res.send(""+
+        "<script>setTimeout(function(){window.location.reload(1);}, 3000);</script>")
     }
 })
 
@@ -180,7 +192,7 @@ app.get('/tip', (req, res) => {
 app.get('/setup', (req, res) => {
     
     api_tok = req.query.user;
-    res.send(api_tok);
+    res.send("https://eventsapi.chaturbate.com/events/"+api_tok);
     getEvents("https://eventsapi.chaturbate.com/events/"+api_tok)
 
 })
